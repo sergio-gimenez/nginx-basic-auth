@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    image: nginx_with_radius_auth
+    ports:
+      - 8080:80
+    restart: unless-stopped
+    networks:
+      - nginx-radius
+
+  web:
+    image: tutum/hello-world:latest
+    ports:
+      - 8000:80
+
+networks:
+  nginx-radius:
+    external: true

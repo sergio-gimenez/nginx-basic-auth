@@ -1,0 +1,36 @@
+# Dockerfile
+
+# Use a Debian-based image with necessary build tools and wget
+FROM debian:buster AS builder
+
+# Install additional dependencies required for Nginx and ngx_http_auth_radius_module
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    build-essential \
+    libpcre3 \
+    libpcre3-dev \
+    zlib1g \
+    zlib1g-dev \
+    libssl-dev \
+    wget \
+    ca-certificates
+
+
+# Clone the ngx_http_auth_radius_module repository
+RUN git clone https://github.com/nginx-modules/ngx_http_auth_radius_module.git /ngx_http_auth_radius_module
+
+# Download Nginx source code and compile it with the module
+RUN cd ngx_http_auth_radius_module
+RUN make getsrc && make src
+RUN make build_all
+RUN make_install
+
+# Copy your custom nginx.conf and other configuration files to the container
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY radius_clients.conf /etc/nginx/radius_clients.conf
+
+# Expose the container's port
+EXPOSE 80
+
+# Start Nginx with your custom configuration and the dynamic module
+CMD ["nginx", "-g", "daemon off;"]
