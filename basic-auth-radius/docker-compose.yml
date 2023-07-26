@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   my-radius:
@@ -9,5 +9,5 @@ services:
     container_name: my-radius
     ports:
       - "1812-1813:1812-1813/udp"
-    command: -X
+    command: -X # Enable debugging output
     restart: unless-stopped
