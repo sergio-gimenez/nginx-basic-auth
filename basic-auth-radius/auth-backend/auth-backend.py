@@ -4,11 +4,11 @@ from pyrad.dictionary import Dictionary
 import pyrad.packet
 
 srv = Client(server="localhost", secret=b"testing123",
-             dict=Dictionary("dictionary/dictionary"))
+             dict=Dictionary("dictionary"))
 
 # create request
 req = srv.CreateAuthPacket(code=pyrad.packet.AccessRequest,
-                           User_Name="bob", NAS_Identifier="localhost")
+                           User_Name="bob", NAS_Identifier="ThatNAS")
 req["User-Password"] = req.PwCrypt("test")
 
 # send request
