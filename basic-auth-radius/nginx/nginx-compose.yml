@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  nginx:
+    container_name: nginx
+    # image: openresty/openresty:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.openresty
+    ports:
+      - 8080:80
+    volumes:
+      - ./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+      - ./auth.lua:/usr/local/openresty/nginx/conf/auth.lua
+    restart: unless-stopped
+    networks:
+      - nginx-radius
+
+  web:
+    container_name: web
+    image: tutum/hello-world:latest
+    ports:
+      - 8000:80
+    networks:
+      - nginx-radius
+
+networks:
+  nginx-radius:
+    external: true
