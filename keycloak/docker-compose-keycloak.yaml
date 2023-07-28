@@ -1,0 +1,34 @@
+#
+# to use this, run `docker-compose up` in the directory holding this gist.
+# or wget/curl the file and pipe it it into `docker-compose up`
+#
+
+version: "3.5"
+
+services:
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.0.0
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      RADIUS_SHARED_SECRET: secret
+      RADIUS_UDP: 'true'
+      RADIUS_UDP_AUTH_PORT: 1812
+      RADIUS_UDP_ACCOUNT_PORT: 1813
+      RADIUS_RADSEC: 'false'
+      RADIUS_DICTIONARY: ''
+      RADIUS_RADSEC_PRIVATEKEY: /config/private.key
+      RADIUS_RADSEC_CERTIFICATE: /config/public.crt
+      RADIUS_COA: 'false'
+      RADIUS_COA_PORT: 3799
+      "keycloak.profile.feature.upload_scripts": enabled
+    ports:
+      - "8090:8080" #  UI
+      - "8190:8190" #  DEBUG
+      - "1812:1812/udp" #  RADIUS
+      - "1813:1813/udp" #  RADIUS
+    volumes:
+      - ./scripts:/opt/radius/scripts
+      - ./config:/config
+    entrypoint: sh /opt/radius/scripts/docker-entrypoint.sh start-dev
