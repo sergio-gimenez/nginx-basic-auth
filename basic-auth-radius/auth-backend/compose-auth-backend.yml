@@ -10,4 +10,10 @@ services:
       - "8000:8000"
     environment:
       RADIUS_SECRET: testing123
-      RADIUS_SERVER: example.com
+      RADIUS_SERVER: my-radius
+    networks:
+      - nginx-radius
+
+networks:
+  nginx-radius:
+    external: true
