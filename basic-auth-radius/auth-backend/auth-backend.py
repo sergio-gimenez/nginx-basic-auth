@@ -1,6 +1,14 @@
+import os
+
 from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
+
+RADIUS_SECRET = os.environ.get("RADIUS_SECRET")
+RADIUS_SERVER = os.environ.get("RADIUS_SERVER")
+
+if not RADIUS_SECRET or not RADIUS_SERVER:
+    raise Exception("RADIUS_SECRET and RADIUS_SERVER must be set")
 
 
 @app.post("/auth")
@@ -9,7 +17,7 @@ async def authenticate(user: str, password: str):
     from pyrad.dictionary import Dictionary
     import pyrad.packet
 
-    srv = Client(server="localhost", secret=b"testing123",
+    srv = Client(server=RADIUS_SERVER, secret=RADIUS_SECRET.encode(),
                  dict=Dictionary("dictionary"))
 
     # create request
