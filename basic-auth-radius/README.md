@@ -1,6 +1,6 @@
+# Basic Authentication Against RADIUS
 
-
-
+```
        ┌───────┐
        │       │
        │ nginx │
@@ -10,8 +10,8 @@
            │ Forward Basic Auth Header
            │
        ┌───▼───┐
-       │ auth │
-       │backend│
+       │ auth  │
+       │backend│
        │       │
        └───┬───┘
            │
@@ -22,4 +22,4 @@
        │radius │
        │       │
        └───────┘
-
+```
