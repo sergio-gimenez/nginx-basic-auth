@@ -1,6 +1,7 @@
+import base64
 import os
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header
 
 app = FastAPI()
 
@@ -12,10 +13,27 @@ if not RADIUS_SECRET or not RADIUS_SERVER:
 
 
 @app.post("/auth")
-async def authenticate(user: str, password: str):
+async def authenticate(authorization: str = Header(None)):
     from pyrad.client import Client
     from pyrad.dictionary import Dictionary
     import pyrad.packet
+
+    if not authorization:
+        raise HTTPException(
+            status_code=401, detail="missing authorization header")
+
+    print(authorization)
+
+    auth_type, auth_value = authorization.split(" ", 1)
+
+    if auth_type.lower() != "basic":
+        raise HTTPException(
+            status_code=401, detail="unsupported authorization type")
+
+    auth_value = base64.b64decode(auth_value).decode()
+    user, password = auth_value.split(":", 1)
+
+    print(user, password)
 
     srv = Client(server=RADIUS_SERVER, secret=RADIUS_SECRET.encode(),
                  dict=Dictionary("dictionary"))
