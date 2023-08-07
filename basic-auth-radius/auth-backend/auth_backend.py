@@ -22,6 +22,8 @@ async def authenticate(authorization: str = Header(None)):
         raise HTTPException(
             status_code=401, detail="missing authorization header")
 
+    print(authorization)
+
     auth_type, auth_value = authorization.split(" ", 1)
 
     if auth_type.lower() != "basic":
@@ -30,6 +32,8 @@ async def authenticate(authorization: str = Header(None)):
 
     auth_value = base64.b64decode(auth_value).decode()
     user, password = auth_value.split(":", 1)
+
+    print(user, password)
 
     srv = Client(server=RADIUS_SERVER, secret=RADIUS_SECRET.encode(),
                  dict=Dictionary("dictionary"))
